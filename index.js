@@ -32,10 +32,17 @@ async function run(){
          res.send(result)
        })
 
+       app.get('/order', async(req, res)=>{
+         const query = {};
+         const cursor =  orderCollection.find(query);
+         const order = await cursor.toArray();
+         res.send(order);
+       })
+
        app.post("/order", async(req, res) => {
-         const orderData = req.body
+         const orderData = req.body;
          const result = orderCollection.insertOne(orderData)
-         res.send(result)
+         res.send(result);
        });
     }
     finally{

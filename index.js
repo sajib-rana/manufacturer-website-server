@@ -16,6 +16,7 @@ async function run(){
     try{
        await client.connect();
        const serviceCollection = client.db('Wrench_portal').collection('services');
+       const orderCollection = client.db('Wrench_portal').collection('orders');
 
        app.get('/service', async(req, res)=>{
            const query = {};
@@ -30,6 +31,12 @@ async function run(){
          const result = await serviceCollection.findOne(query)
          res.send(result)
        })
+
+       app.post("/order", async(req, res) => {
+         const orderData = req.body
+         const result = orderCollection.insertOne(orderData)
+         res.send(result)
+       });
     }
     finally{
 

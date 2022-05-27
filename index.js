@@ -17,6 +17,7 @@ async function run(){
        await client.connect();
        const serviceCollection = client.db('Wrench_portal').collection('services');
        const orderCollection = client.db('Wrench_portal').collection('orders');
+       const userCollection = client.db('Wrench_portal').collection('user');
 
        app.get('/service', async(req, res)=>{
            const query = {};
@@ -28,9 +29,21 @@ async function run(){
        app.get('/service/:id', async(req, res)=>{
          const id = req.params.id
          const query = {_id: ObjectId(id)}
-         const result = await serviceCollection.findOne(query)
+         const result = await serviceCollection.findOne(query)     
          res.send(result)
        })
+
+       app.put('/user/:email', async (req, res) => {
+      const email = req.params.email;
+      const user = req.body;
+      const filter = { email: email };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: user,
+      };
+      const result = await userCollection.updateOne(filter, updateDoc, options);
+      res.send( result);
+    })
 
        app.get('/order', async(req, res)=>{
          const query = {};
@@ -51,7 +64,7 @@ async function run(){
 }
 run().catch(console.dir);
 app.get("/", (req, res) => {
-  res.send("Hello this is wrench");
+  res.send("Hello this is wrench");  
 });
 
 app.listen(port, () => {
